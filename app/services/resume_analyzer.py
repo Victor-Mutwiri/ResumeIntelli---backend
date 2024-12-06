@@ -86,8 +86,7 @@ class ResumeAnalyzer:
         - Prioritize skills from job posting
 
         ## PROFESSIONAL EXPERIENCE
-        ### **Company Name**
-        ***Job Title*** | ***Employment Dates***
+        ### **Company Name** | *Job Title* (***Employment Dates***)
         - Achievement-focused bullet point with quantifiable result
         - Another metric-driven accomplishment
         - Demonstrates impact using strong action verbs
@@ -141,10 +140,7 @@ class ResumeAnalyzer:
         
         "4. Professional Experience Format:\n"
         
-        "   - CONSISTENT FORMAT: Company Name | Job Title | Employment Dates\n"
-        "   - Company Name: BOLD\n"
-        "   - Job Title: Regular text\n"
-        "   - Employment Dates: Italicized\n"
+        "   - CONSISTENT FORMAT: Company Name | Job Title (Employment Dates)\n"
         "   - 3-5 achievement-focused bullet points per role with quantifiable results even if not mentioned in the resume\n"
         "   - Quantify achievements wherever possible even if not mentioned in the resume eg 'reduced costs by 15% '\n"
         "   - Use strong action verbs: 'Developed', 'Implemented', 'Led', 'Optimized'\n"
