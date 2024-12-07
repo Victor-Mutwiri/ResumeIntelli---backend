@@ -2,6 +2,7 @@ from sentence_transformers import SentenceTransformer
 from groq import Groq
 from typing import List
 import re
+import logging
 
 class ResumeAnalyzer:
     """
@@ -58,7 +59,7 @@ class ResumeAnalyzer:
         try:
             response = self.groq_client.chat.completions.create(
                 messages=prompt,
-                model="llama3-8b-8192"
+                model="llama3-70b-8192"
             )
             feedback = response.choices[0].message.content
             # Estimate tokens used
@@ -77,35 +78,35 @@ class ResumeAnalyzer:
         """
         
         template_example = '''
-        ## PROFESSIONAL SUMMARY
+        PROFESSIONAL SUMMARY
         3-4 sentences strategic overview highlighting top qualifications and directly addressing job requirements.
 
-        ## KEY SKILLS
+        KEY SKILLS
         - Technical skills matching job description
         - Soft skills and additional competencies
         - Prioritize skills from job posting
 
-        ## PROFESSIONAL EXPERIENCE
-        ### **Company Name** | *Job Title* (***Employment Dates***)
+        PROFESSIONAL EXPERIENCE
+        **Company Name** | *Job Title* (***Employment Dates***)
         - Achievement-focused bullet point with quantifiable result
         - Another metric-driven accomplishment
         - Demonstrates impact using strong action verbs
 
         [Repeat for each professional experience]
 
-        ## EDUCATION
-        ### University Name
+        EDUCATION
+        University Name
         **Degree** | *Graduation Period*
         - Relevant academic achievements or honors
 
-        ## ADDITIONAL INFORMATION
-        ### LANGUAGES
-        - Language proficiencies
+        ADDITIONAL INFORMATION
+        LANGUAGES
+        - Language - proficiencies
 
-        ### CERTIFICATIONS
+        CERTIFICATIONS
         - Professional certifications
 
-        ### OPTIONAL SECTIONS
+        OPTIONAL SECTIONS
         - Volunteer work
         - Additional achievements
         '''
@@ -115,10 +116,9 @@ class ResumeAnalyzer:
         f"User Resume:\n{resume_text}\n\n"
         f"Job Description:\n{job_description}\n\n"
         "Resume Writing Instructions:\n"
-        "You are an expert resume writer specializing in creating ATS-optimized, job-specific resumes. "
+        "You are an expert resume writer specializing in creating ATS-optimized, job-specific resumes by STRICTLY following the template provided. "
         "Your task is to craft a strategic, compelling resume that positions the candidate as the ideal match for the role.\n"
-        "I have generated a couple of resumes and each resume differes in formatting from the other so please ensure you strictly follow the template exactly:\n"
-        "You  should start from theProfessional Summary section as the user will handle adding their own information to the resume"
+        "You  should start from the Summary section as the user will handle adding their own information to the resume"
         "STRICT FORMATTING RULES:\n"
         "1. Section Headings:\n"
         "   - ALL UPPERCASE\n"
@@ -180,19 +180,17 @@ class ResumeAnalyzer:
         
         "Desired Outcome:\n"
         "Generate a compelling, tailored resume that positions the candidate "
-        "as an exceptional match for the specific role, maximizing interview potential. Ensure the resume strictlyadheres to the template provided."
+        "as an exceptional match for the specific role, maximizing interview potential. Ensure the resume strictly adheres to the template provided."
         
         "CRITICAL INSTRUCTION: ABSOLUTELY MIRROR THE PROVIDED TEMPLATE FORMAT. "
-        "NO DEVIATION IS PERMITTED. EACH GENERATED RESUME MUST LOOK IDENTICAL IN STRUCTURE."
-        "ENSURE UNIFORM APPEARANCE ACROSS ALL GENERATED RESUMES"
-        "Finally don't include such remarks in the resume: Note that I have strictly followed the template, using the exact formatting and adhering to the instructions provided. Any deviations would result in an unacceptable outcome"
-        "And also don't include anything that is not supposed to be in a resume"
         )
         
         try:
             response = self.groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                model="llama3-8b-8192"
+                model = "llama-3.3-70b-versatile",
+                temperature=0.8,
+                
             )
             custom_resume = response.choices[0].message.content
         except Exception as e:
@@ -226,7 +224,7 @@ class ResumeAnalyzer:
             "\n**Additional Requirements**:\n"
             "   - Format professionally with proper paragraphs and spacing.\n"
             "- Keep the tone personable yet professional.\n"
-            "- Limit the length to approximately 180-250 words.\n"
+            "- Limit the length to approximately 150-200 words.\n"
             "- Use only information from the provided resume and job description.\n"
             "- Avoid generic phrases; focus on tailored and specific content that demonstrates value."
         )
@@ -234,7 +232,8 @@ class ResumeAnalyzer:
         try:
             response = self.groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
-                model="llama3-8b-8192"
+                model="gemma2-9b-it",
+                temperature=0.4,
             )
             cover_letter = response.choices[0].message.content
         except Exception as e:
