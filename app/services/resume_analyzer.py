@@ -46,13 +46,13 @@ class ResumeAnalyzer:
             {"role": "user", "content": f"Resume: {resume_text}"},
             {"role": "user", "content": (
                 "Please provide a detailed analysis of how well this resume matches the job description. "
-                "Include the following sections:\n"
-                "1. Key Skills Match: List the skills that align well with the job requirements\n"
-                "2. Missing Skills: Identify important skills from the job description that are not evident in the resume\n"
-                "3. Experience Alignment: Evaluate how well the candidate's experience matches the role\n"
-                "4. Improvement Suggestions: Specific recommendations for strengthening the application\n"
-                "5. Overall Rating: Score from 1-10 (10 being perfect match) with brief explanation\n\n"
                 "Focus on concrete evidence from the resume without making assumptions about unlisted skills."
+                "Include the following sections:\n"
+                "Key Skills Match: List the skills that align well with the job requirements\n"
+                "Missing Skills: Identify important skills from the job description that are not evident in the resume\n"
+                "Experience Alignment: Evaluate how well the candidate's experience matches the role\n"
+                "Improvement Suggestions: Specific recommendations for strengthening the application\n"
+                "Overall Rating: Score from 1-10 (10 being perfect match) with brief explanation\n\n"
             )}
         ]
         
@@ -233,7 +233,7 @@ class ResumeAnalyzer:
             response = self.groq_client.chat.completions.create(
                 messages=[{"role": "user", "content": prompt}],
                 model="gemma2-9b-it",
-                temperature=0.4,
+                temperature=0.7,
             )
             cover_letter = response.choices[0].message.content
         except Exception as e:
