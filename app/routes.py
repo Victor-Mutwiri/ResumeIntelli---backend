@@ -39,6 +39,10 @@ def health_check():
         'message': 'Resume analyzer API is running'
     })
 
+@api.route('/favicon.ico')
+def favicon():
+    return '', 204
+
 @api.route('/api/analyze', methods=['POST'])
 def analyze_resume():
     try:
@@ -47,7 +51,6 @@ def analyze_resume():
         
         resume_file = request.files['resume']
         
-        # Ensure resume_file is a file object
         if not hasattr(resume_file, 'filename'):
             return jsonify({'error': 'Invalid file object'}), 400
         
@@ -62,16 +65,14 @@ def analyze_resume():
         if not resume_file.filename.endswith('.pdf'):
             return jsonify({'error': 'Only PDF files are allowed'}), 400
         
-        # Save the file temporarily
         filename = secure_filename(resume_file.filename)
         temp_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         resume_file.save(temp_path)
         
-        # Read the text from the saved file
-        resume_text = read_text_from_pdf(temp_path)
-        
-        # Clean up the temporary file
-        os.remove(temp_path)
+        try:
+            resume_text = read_text_from_pdf(temp_path)
+        finally:
+            os.remove(temp_path)
         
         if not resume_text:
             return jsonify({'error': 'Could not extract text from PDF'}), 400
@@ -85,8 +86,7 @@ def analyze_resume():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
- 
-    
+
 @api.route('/api/generate_custom_resume', methods=['POST'])
 def generate_custom_resume():
     try:
@@ -113,8 +113,10 @@ def generate_custom_resume():
         temp_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         resume_file.save(temp_path)
         
-        resume_text = read_text_from_pdf(temp_path)
-        os.remove(temp_path)
+        try:
+            resume_text = read_text_from_pdf(temp_path)
+        finally:
+            os.remove(temp_path)
         
         if not resume_text:
             return jsonify({'error': 'Could not extract text from PDF'}), 400
@@ -128,8 +130,7 @@ def generate_custom_resume():
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
-    
+
 @api.route('/api/generate_cover_letter', methods=['POST'])
 def generate_cover_letter():
     try:
@@ -156,8 +157,10 @@ def generate_cover_letter():
         temp_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
         resume_file.save(temp_path)
         
-        resume_text = read_text_from_pdf(temp_path)
-        os.remove(temp_path)
+        try:
+            resume_text = read_text_from_pdf(temp_path)
+        finally:
+            os.remove(temp_path)
         
         if not resume_text:
             return jsonify({'error': 'Could not extract text from PDF'}), 400
