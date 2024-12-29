@@ -4,9 +4,18 @@ from werkzeug.utils import secure_filename
 from app.services.resume_analyzer import ResumeAnalyzer
 from app.utils.pdf_utils import read_text_from_pdf
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Add multiple origins for development
+allowed_origins = ["https://resume-intelli.vercel.app"]
+
+if os.getenv('FLASK_ENV') == 'development':
+    allowed_origins.extend(["http://localhost:3000", "http://127.0.0.1:5000"])
 
 api = Blueprint('api', __name__)
-CORS(api, origins=["https://resume-intelli.vercel.app"])
+CORS(api, origins=allowed_origins)
 
 analyzer = None
 
