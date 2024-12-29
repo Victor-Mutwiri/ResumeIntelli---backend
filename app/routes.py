@@ -6,7 +6,7 @@ from app.utils.pdf_utils import read_text_from_pdf
 import os
 
 api = Blueprint('api', __name__)
-CORS(api)
+CORS(api, origins=["https://resume-intelli.vercel.app"])
 
 analyzer = None
 
